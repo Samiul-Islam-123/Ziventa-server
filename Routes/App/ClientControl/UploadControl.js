@@ -155,8 +155,8 @@ ClientUploadRoute.post('/checkout-payment', async(req,res)=>{
     payment_method_types : ["card"],
     mode:"payment",
     line_items: lineItems,
-    success_url : "http://localhost:3000/profile",
-    cancel_url : "http://localhost:3000/cart"
+    success_url : "https://ziventa-client.vercel.app/profile",
+    cancel_url : "https://ziventa-client.vercel.app/products"
   })
 
 
