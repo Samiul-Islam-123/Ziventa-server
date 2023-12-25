@@ -24,6 +24,147 @@ ClientFetchControlRoute.get("/all-products", async (req, res) => {
   }
 });
 
+ClientFetchControlRoute.get("/products/:category", async (req, res) => {
+  try {
+    const Products = await ProductModel.find({
+      "ProductMetaData.Category": new RegExp(req.params.category, 'i')
+    });
+
+    res.json({
+      message: "OK",
+      products: Products,
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+ClientFetchControlRoute.get("/:category/filter/price/high-low", async (req, res) => {
+  try {
+    const products = await ProductModel.find({
+      "ProductMetaData.Category": new RegExp(req.params.category, 'i')
+    }).sort({
+      ProductPrice : -1//sorting in decending order
+    })
+    res.json({
+      message : "OK",
+      products : products
+    })
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+ClientFetchControlRoute.get("/:category/filter/price/low-high", async (req, res) => {
+  try {
+    const products = await ProductModel.find({
+      "ProductMetaData.Category": new RegExp(req.params.category, 'i')
+    }).sort({
+      ProductPrice : 1//sorting in ascending order
+    })
+    //console.log(products)
+    res.json({
+      message : "OK",
+      products : products
+    })
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+ClientFetchControlRoute.get("/:category/filter/rating-first", async (req, res) => {
+  try {
+    const products = await ProductModel.find({
+      "ProductMetaData.Category": new RegExp(req.params.category, 'i')
+    }).sort({
+      ProductPrice : 1//sorting in ascending order
+    })
+    //console.log(products)
+    res.json({
+      message : "OK",
+      products : products
+    })
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+ClientFetchControlRoute.get("/:category/filter/recent-first", async (req, res) => {
+  try {
+    //sorting Object Id in descending order to get recent ones at first
+    const products = await ProductModel.find({
+      "ProductMetaData.Category": new RegExp(req.params.category, 'i')
+    })
+      .sort({ _id: -1 }) 
+      .exec();
+
+    res.json({
+      message: "OK",
+      products: products,
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+ClientFetchControlRoute.get("/search/:query", async (req, res) => {
+  try {
+    const query = req.params.query;
+    const products =await ProductModel.find({
+      ProductTitle : {
+        $regex : new RegExp(query, 'i')
+      }
+    }).exec();
+    if(products.length > 0)
+    {
+      res.json({
+        message: "OK",
+        products : products
+        
+      });
+
+    }
+
+    else
+    {
+      res.json({
+        message: "No products found :("
+      });
+    }
+    //console.log(products)
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+
+
+
+
 //route to get specific product Details
 ClientFetchControlRoute.get("/product-details/:productID", async (req, res) => {
   try {

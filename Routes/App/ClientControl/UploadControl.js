@@ -3,6 +3,7 @@ const OrderModel = require("../../../DataBase/Models/OrderModel");
 const AuthUtils = require("./../../../Utils/AuthUtils");
 const ClientUploadRoute = require("express").Router();
 const sendEmail = require("../../../Utils/EmailSender");
+const ProductModel = require("../../../DataBase/Models/ProductModel");
 const stripe = require('stripe')("sk_test_51OBBNrSCHCgq5ZNZJrzPCuZA9SdlAmjyWdx4orDFKAtKIctHqv8baaovNRlOpvtLpnX9cc0mk6xHF3pkXFMNW13700kwixuFSz")
 
 
@@ -155,8 +156,8 @@ ClientUploadRoute.post('/checkout-payment', async(req,res)=>{
     payment_method_types : ["card"],
     mode:"payment",
     line_items: lineItems,
-    success_url : "http://localhost:3000/profile",
-    cancel_url : "http://localhost:3000/cart"
+    success_url : "https://www.ziventa.shop/profile",
+    cancel_url : "https://www.ziventa.shop/cart"
   })
 
 
@@ -170,5 +171,42 @@ ClientUploadRoute.post('/checkout-payment', async(req,res)=>{
   })
  }
 })
+
+ClientUploadRoute.post('/add-review', async(req,res)=>{
+  
+  try{
+    const token = req.body.token;
+    const decodedToken = await(AuthUtils.decodeToken(token));
+   const productID = req.body.productID;
+   const ProductData = await ProductModel.findOne({_id:productID});
+   const reviewData = {
+    customer : decodedToken.user_id,
+    content : req.body.reviewContent
+   };
+   if(ProductData)
+  {
+    ProductData.Review.push(reviewData);
+    //saving updated Data
+    await ProductData.save();
+    res.json({
+      message : "OK"
+    })
+  }else{
+
+    
+    res.json({
+      message : "No product found"
+    })
+  } 
+ 
+  }
+  catch(error){
+   console.error(error);
+   res.json({
+     message : "error",
+     error : error
+   })
+  }
+ })
 
 module.exports = ClientUploadRoute;

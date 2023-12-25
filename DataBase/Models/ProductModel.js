@@ -14,7 +14,15 @@ const ProductSchema = new mongoose.Schema({
         AgeRange : String,
         PriceRange : String,
         Category : String
-    }
+    },
+    UpdatedAt : Date,
+    Review : [{
+        customer : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "user"
+        },
+        content : String
+    }]
 
 })
 
