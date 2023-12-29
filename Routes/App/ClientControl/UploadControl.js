@@ -138,6 +138,7 @@ Team Ziventa
 ClientUploadRoute.post('/checkout-payment', async(req,res)=>{
   
  try{
+   const token = req.body.token;
   const products = req.body.products;
   const lineItems = products.map(item=>{
     return {
@@ -156,7 +157,7 @@ ClientUploadRoute.post('/checkout-payment', async(req,res)=>{
     payment_method_types : ["card"],
     mode:"payment",
     line_items: lineItems,
-    success_url : `${process.env.API}/success`,
+    success_url : `${process.env.API}/success/${token}`,
     cancel_url : "https://www.ziventa.shop/cart"
   })
 
