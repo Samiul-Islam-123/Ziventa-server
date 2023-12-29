@@ -24,8 +24,6 @@ ClientFetchControlRoute.get("/all-products", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-=======
 ClientFetchControlRoute.get("/products/:category", async (req, res) => {
   try {
     const Products = await ProductModel.find({
@@ -167,7 +165,6 @@ ClientFetchControlRoute.get("/search/:query", async (req, res) => {
 
 
 
->>>>>>> cf5b0685a21b0c57c3bbc76ac8ce237c7a5bc052
 //route to get specific product Details
 ClientFetchControlRoute.get("/product-details/:productID", async (req, res) => {
   try {
