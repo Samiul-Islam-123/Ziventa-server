@@ -3,7 +3,9 @@ const OrderModel = require("../../../DataBase/Models/OrderModel");
 const AuthUtils = require("./../../../Utils/AuthUtils");
 const ClientUploadRoute = require("express").Router();
 const sendEmail = require("../../../Utils/EmailSender");
-const stripe = require('stripe')(process.env.STRIPE_SECRET)
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const UIDModel = require('../../../Utils/UID');
+
 
 
 
@@ -135,40 +137,37 @@ Team Ziventa
 });
 
 ClientUploadRoute.post('/checkout-payment', async (req, res) => {
-
   try {
     const products = req.body.products;
-    const lineItems = products.map(item => {
+    const lineItems = products.map((item) => {
       return {
         price_data: {
-          currency: "inr",
+          currency: 'inr',
           product_data: {
-            name: item.name
+            name: item.name,
           },
-          unit_amount: (item.price) * 100
+          unit_amount: item.price * 100,
         },
-        quantity: item.Qty
-      }
-    })
+        quantity: item.Qty,
+      };
+    });
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
+      payment_method_types: ['card'],
+      mode: 'payment',
       line_items: lineItems,
-      success_url: `${process.env.FRONTEND}/profile`,
-      cancel_url: `${process.env.FRONTEND}/cart/${req.body.orderID}`
-    })
+      success_url: `${process.env.FRONTEND}/success/${UIDModel.generateExpirableUID()}`,
+      cancel_url: `${process.env.FRONTEND}/cart/`,
+    });
 
-
-    res.json({ id: session.id })
-  }
-  catch (error) {
+    res.json({ id: session.id });
+  } catch (error) {
     console.error(error);
-    res.json({
-      message: "error",
-      error: error
-    })
+    res.status(500).json({
+      message: 'error',
+      error: error,
+    });
   }
-})
+});
 
 module.exports = ClientUploadRoute;
