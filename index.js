@@ -29,15 +29,12 @@ app.get("/", (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-=======
 app.get("/success", (req, res) => {
   res.status(200).json({
     message: "Payment successful :)",
   });
 });
 
->>>>>>> cf5b0685a21b0c57c3bbc76ac8ce237c7a5bc052
 app.post("/decodeToken", async (req, res) => {
   try {
     const decodedToken = await decodeToken(req.body.token);
