@@ -14,9 +14,6 @@ const ProductSchema = new mongoose.Schema({
         AgeRange : String,
         PriceRange : String,
         Category : String
-<<<<<<< HEAD
-    }
-=======
     },
     UpdatedAt : Date,
     Review : [{
@@ -26,7 +23,6 @@ const ProductSchema = new mongoose.Schema({
         },
         content : String
     }]
->>>>>>> cf5b0685a21b0c57c3bbc76ac8ce237c7a5bc052
 
 })
 
