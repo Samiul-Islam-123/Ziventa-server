@@ -29,6 +29,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/success", (req, res) => {
+  res.status(200).json({
+    message: "Payment successful :)",
+  });
+});
+
 app.post("/decodeToken", async (req, res) => {
   try {
     const decodedToken = await decodeToken(req.body.token);
