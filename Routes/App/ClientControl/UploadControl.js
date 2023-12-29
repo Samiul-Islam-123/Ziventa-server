@@ -156,7 +156,7 @@ ClientUploadRoute.post('/checkout-payment', async(req,res)=>{
     payment_method_types : ["card"],
     mode:"payment",
     line_items: lineItems,
-    success_url : "https://www.ziventa.shop/profile",
+    success_url : `${process.env.API}/success`,
     cancel_url : "https://www.ziventa.shop/cart"
   })
 
