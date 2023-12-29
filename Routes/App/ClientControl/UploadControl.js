@@ -124,7 +124,6 @@ Team Ziventa
 
     res.json({
       message: "OK",
-      orderID : CurrentOrder._id
     });
   } catch (error) {
     console.error(error);

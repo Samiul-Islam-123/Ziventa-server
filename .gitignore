@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 /node_modules
 .env
 credentials.json
+=======
+/node_modules
+>>>>>>> cf5b0685a21b0c57c3bbc76ac8ce237c7a5bc052
