@@ -13,7 +13,8 @@ const OrderSchema = new mongoose.Schema({
             Qty: Number // Add the Qty field here
         }
     ],
-
+    address : String,
+    Phone : String,
     OrderPrice : Number,
     Delivered : Boolean,
     Paid : Boolean,

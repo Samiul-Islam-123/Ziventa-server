@@ -94,6 +94,8 @@ ClientUploadRoute.post("/place-order", async (req, res) => {
       OrderStatus: "Order Requested",
       createdAt: formattedDate,
       ExpectedDeliveryDate: "",
+      address : req.body.address,
+      Phone : req.body.Phone
     });
     await CurrentOrder.save();
 
