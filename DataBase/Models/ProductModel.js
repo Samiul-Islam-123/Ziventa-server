@@ -16,12 +16,13 @@ const ProductSchema = new mongoose.Schema({
         Category : String
     },
     UpdatedAt : Date,
-    Review : [{
+    Reviews : [{
         customer : {
             type : mongoose.Schema.Types.ObjectId,
             ref : "user"
         },
-        content : String
+        review : String,
+        Date : String
     }]
 
 })

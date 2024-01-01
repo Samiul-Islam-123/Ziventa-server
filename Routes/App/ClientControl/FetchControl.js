@@ -227,7 +227,10 @@ ClientFetchControlRoute.get("/order-history/:token", async (req, res) => {
     const decodedToken = await AuthUtils.decodeToken(req.params.token);
     const OrderData = await OrderModel.find({
       customer: decodedToken.user_id,
-    }).populate("products.product");
+    }).populate([
+      { path: 'products.product' },
+      { path: 'customer' } // Assuming 'customer' is the field in OrderModel that references the customer
+    ]);
     if (OrderData) {
       res.json({
         message: "OK",
@@ -246,6 +249,7 @@ ClientFetchControlRoute.get("/order-history/:token", async (req, res) => {
     });
   }
 });
+
 
 ClientFetchControlRoute.get("/badge-values/:token", async (req, res) => {
   try {

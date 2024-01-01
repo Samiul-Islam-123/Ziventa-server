@@ -5,6 +5,7 @@ const ClientUploadRoute = require("express").Router();
 const sendEmail = require("../../../Utils/EmailSender");
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const UIDModel = require('../../../Utils/UID');
+const ProductModel = require('./../../../DataBase/Models/ProductModel')
 
 
 
@@ -58,6 +59,14 @@ ClientUploadRoute.post("/add-to-cart", async (req, res) => {
 });
 
 ClientUploadRoute.post("/place-order", async (req, res) => {
+  /**
+   * Requirements :
+   * token
+   * products[]
+   * OrderPrice
+   * Address
+   * Phone Number
+   */
   try {
     const token = req.body.token;
     const decodedToken = await AuthUtils.decodeToken(token);
@@ -128,6 +137,7 @@ Team Ziventa
 
     res.json({
       message: "OK",
+      placedOrderID : CurrentOrder._id
     });
   } catch (error) {
     console.error(error);
@@ -140,29 +150,31 @@ Team Ziventa
 
 ClientUploadRoute.post('/checkout-payment', async (req, res) => {
   try {
+    //console.log(`${req.body.placedOrderID}`)
     const products = req.body.products;
-    const lineItems = products.map((item) => {
+    const lineItems = products.map(item => {
       return {
         price_data: {
-          currency: 'inr',
+          currency: "inr",
           product_data: {
-            name: item.name,
+            name: item.name
           },
-          unit_amount: item.price * 100,
+          unit_amount: (item.price) * 100
         },
-        quantity: item.Qty,
-      };
-    });
+        quantity: item.Qty
+      }
+    })
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
+      payment_method_types: ["card"],
+      mode: "payment",
       line_items: lineItems,
-      success_url: `${process.env.FRONTEND}/success/${UIDModel.generateExpirableUID()}`,
-      cancel_url: `${process.env.FRONTEND}/cart/`,
-    });
+      success_url: `${process.env.FRONTEND}/profile`,
+      cancel_url: `${process.env.API}/cancel/${req.body.placedOrderID}`
+    })
 
-    res.json({ id: session.id });
+
+    res.json({ id: session.id })
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -171,5 +183,54 @@ ClientUploadRoute.post('/checkout-payment', async (req, res) => {
     });
   }
 });
+
+ClientUploadRoute.post('/add-review', async(req,res)=>{
+
+  /**
+   * Required as input : 
+   * token 
+   * OrderID
+   * review
+   */
+
+  try{
+    const token = req.body.token;
+    const decodedToken = await AuthUtils.decodeToken(token);
+    const OrderId = req.body.OrderID;
+    const currentDate = new Date();
+  
+      const day = currentDate.getDate().toString().padStart(2, "0");
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+      const year = currentDate.getFullYear();
+      const FormattedDate = `${day}/${month}/${year}`;
+    const CurrentOrder = await ProductModel.findOne({
+      _id : OrderId
+    })
+    if(CurrentOrder){
+      CurrentOrder.Reviews.push({
+        customer : decodedToken.user_id,
+        review : req.body.review,
+        Date : FormattedDate
+      })
+      await CurrentOrder.save();
+  
+      res.json({
+        message : "OK"
+      })
+    }
+  
+    else{
+      res.json({
+        message : "No Product Found"
+      })
+    }
+  }
+  catch(error){
+    res.json({
+      error : error,
+      message : "ERROR"
+    })
+  }
+})
 
 module.exports = ClientUploadRoute;

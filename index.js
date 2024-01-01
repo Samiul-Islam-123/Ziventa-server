@@ -15,6 +15,7 @@ const ClientFetchControlRoute = require("./Routes/App/ClientControl/FetchControl
 const ClientUploadRoute = require("./Routes/App/ClientControl/UploadControl");
 const ClientDeleteControlRoute = require("./Routes/App/ClientControl/DeleteControls");
 const AuthUtils = require("./Utils/AuthUtils");
+const OrderModel = require("./DataBase/Models/OrderModel");
 //creating express app
 const app = express();
 
@@ -29,10 +30,20 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/success", (req, res) => {
-  res.status(200).json({
-    message: "Payment successful :)",
-  });
+app.get("/cancel/:orderID",async (req, res) => {
+  const result = await OrderModel.findByIdAndDelete(req.params.orderID)
+
+  if(result){
+    // Deletion successful, redirect to /cart url
+    res.redirect(`${process.env.FRONTEND}/cart`);
+  }
+
+  else{
+    res.json({
+      message : "DELETION FAILED"
+    })
+  }
+
 });
 
 app.post("/decodeToken", async (req, res) => {
