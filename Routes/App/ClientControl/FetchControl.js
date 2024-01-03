@@ -26,8 +26,10 @@ ClientFetchControlRoute.get("/all-products", async (req, res) => {
 
 ClientFetchControlRoute.get("/products/:category", async (req, res) => {
   try {
+    const categoryToSearch = req.params.category.toLowerCase();
+
     const Products = await ProductModel.find({
-      "ProductMetaData.Category": new RegExp(req.params.category, 'i')
+      "ProductMetaData.Category": { $regex: new RegExp(`^${categoryToSearch}$`, 'i') }
     });
 
     res.json({
@@ -42,6 +44,7 @@ ClientFetchControlRoute.get("/products/:category", async (req, res) => {
     });
   }
 });
+
 
 ClientFetchControlRoute.get("/:category/filter/price/high-low", async (req, res) => {
   try {
