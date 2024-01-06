@@ -17,6 +17,7 @@ const ClientUploadRoute = require("./Routes/App/ClientControl/UploadControl");
 const ClientDeleteControlRoute = require("./Routes/App/ClientControl/DeleteControls");
 const AuthUtils = require("./Utils/AuthUtils");
 const OrderModel = require("./DataBase/Models/OrderModel");
+const RazorPayRoute = require("./Routes/App/ClientControl/RazorPayRoute");
 //creating express app
 const app = express();
 
@@ -106,6 +107,8 @@ app.use("/app/owner", FetchControlRoute);
 app.use("/app/client", ClientFetchControlRoute);
 app.use("/app/client", ClientUploadRoute);
 app.use("/app/client", ClientDeleteControlRoute);
+
+app.use('/payment', RazorPayRoute)
 
 app.post("/app/decode", async (req, res) => {
   try {
