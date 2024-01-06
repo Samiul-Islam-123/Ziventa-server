@@ -6,6 +6,7 @@ const SignupRoute = require("./Routes/Auth/Signup");
 const LoginRoute = require("./Routes/Auth/Login");
 const VerificationRoute = require("./Routes/Auth/Verification");
 const ResetPasswordRoute = require("./Routes/Auth/PasswordReset");
+const axios = require("axios");
 
 const cors = require("cors");
 const { decodeToken } = require("./Utils/AuthUtils");
@@ -61,6 +62,33 @@ app.post("/decodeToken", async (req, res) => {
     });
   }
 });
+
+
+// Define a function to send a sample request to another route
+const sendSampleRequest = async (sourceRoute, destinationRoute) => {
+  try {
+    const response = await axios.post(destinationRoute, {
+      sampleData: "Hello from " + sourceRoute,
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+// Set up periodic requests between two routes
+setInterval(() => {
+  console.log("Sample request send");
+  sendSampleRequest("/app/client", "/app/owner/sample-request");
+}, 600000); // Send a request from client to owner every 10 minute
+
+setInterval(() => {
+  console.log("Sample request send");
+
+  sendSampleRequest("/app/owner", "/app/client/sample-request");
+}, 600000); // Send a request from owner to client every 10 minute
+
+
 
 //auth routes
 app.use("/authentication", SignupRoute);
