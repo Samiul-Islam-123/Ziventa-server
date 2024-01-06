@@ -60,5 +60,11 @@ FetchControlRoute.get('/orders', async(req,res)=>{
     }
 })
 
+FetchControlRoute.get('/bannerData', async(req,res)=>{
+    res.json({
+        message : "This route is under construction..."
+    })
+})
+
 
 module.exports = FetchControlRoute;

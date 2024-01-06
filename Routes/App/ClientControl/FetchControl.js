@@ -5,7 +5,7 @@ const ProductModel = require("../../../DataBase/Models/ProductModel");
 const AuthUtils = require("./../../../Utils/AuthUtils");
 
 //route to get all products
-ClientFetchControlRoute.get("/all-products", async (req, res) => {
+ClientFetchControlRoute.get("/products", async (req, res) => {
   const RequestHeader = req.headers.authorization;
 
   try {
@@ -14,6 +14,31 @@ ClientFetchControlRoute.get("/all-products", async (req, res) => {
     res.json({
       message: "OK",
       products: Products,
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: "ERROR",
+      error: error,
+    });
+  }
+});
+
+ClientFetchControlRoute.get("/products-categories", async (req, res) => {
+
+
+  try {
+    var categories = [];
+    const Products = await ProductModel.find();
+    if(Products){
+      Products.map(item=>{
+        categories.push(item.ProductMetaData.Category)
+      })
+    }
+
+    res.json({
+      message: "OK",
+      categories: categories,
     });
   } catch (error) {
     console.error(error);
@@ -234,6 +259,8 @@ ClientFetchControlRoute.get("/order-history/:token", async (req, res) => {
       { path: 'products.product' },
       { path: 'customer' } // Assuming 'customer' is the field in OrderModel that references the customer
     ]);
+    
+    
     if (OrderData) {
       res.json({
         message: "OK",

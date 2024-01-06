@@ -35,7 +35,7 @@ app.get("/cancel/:orderID",async (req, res) => {
 
   if(result){
     // Deletion successful, redirect to /cart url
-    res.redirect(`${process.env.FRONTEND}/cart`);
+    res.send(result);
   }
 
   else{

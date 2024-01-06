@@ -98,7 +98,7 @@ ClientUploadRoute.post("/place-order", async (req, res) => {
       customer: customerID,
       OrderPrice: req.body.OrderPrice,
       Delivered: false,
-      Paid: false,
+      Paid: req.body.paidStatus,
       OrderConfirmed: false,
       OrderStatus: "Order Requested",
       createdAt: formattedDate,
